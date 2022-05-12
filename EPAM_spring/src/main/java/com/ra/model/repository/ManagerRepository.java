@@ -1,0 +1,9 @@
+package com.ra.model.repository;
+
+import com.ra.model.entity.Manager;
+import org.springframework.data.repository.CrudRepository;
+
+public interface ManagerRepository extends CrudRepository<Manager, String> {
+
+}
+

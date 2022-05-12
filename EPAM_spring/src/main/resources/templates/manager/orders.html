@@ -1,0 +1,147 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>Hello, world!</title>
+</head>
+<body>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="modal_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/manager/setOrdersFilter" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal_label" th:text="${session.utils.translate('filtering_and_ordering', session.lang)}"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p th:text="${session.utils.translate('order_criteria', session.lang)+':'}"></p>
+                    <li class="list-group-item mb-3">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="date" name="orderCriteria" value="date" class="custom-control-input" checked>
+                            <label class="custom-control-label" for="date" th:text="${session.utils.translate('date', session.lang)}"></label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="cost" name="orderCriteria" value="cost" class="custom-control-input">
+                            <label class="custom-control-label" for="cost" th:text="${session.utils.translate('cost', session.lang)}"></label>
+                        </div>
+                    </li>
+
+                    <p th:text="${session.utils.translate('order_type', session.lang)+':'}"></p>
+                    <li class="list-group-item mb-3">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="straight" name="orderType" value="straight" class="custom-control-input" checked>
+                            <label class="custom-control-label" for="straight" th:text="${session.utils.translate('straight', session.lang)}"></label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="inverted" name="orderType" value="inverted" class="custom-control-input">
+                            <label class="custom-control-label" for="inverted" th:text="${session.utils.translate('inverted', session.lang)}"></label>
+                        </div>
+                    </li>
+
+                    <p th:text="${session.utils.translate('filter_state', session.lang)}+':'"></p>
+                    <li class="list-group-item mb-3">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="ALL" name="filterState" value="" class="custom-control-input" checked>
+                            <label class="custom-control-label" for="all" th:text="${session.utils.translate('all', session.lang)}"></label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="WAIT_FOR_PAYMENT" name="filterState" value="WAIT_FOR_PAYMENT" class="custom-control-input">
+                            <label class="custom-control-label" for="WAIT_FOR_PAYMENT" th:text="${session.utils.translate('wait_for_payment', session.lang)}"></label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="PAID" name="filterState" value="PAID" class="custom-control-input">
+                            <label class="custom-control-label" for="PAID" th:text="${session.utils.translate('paid', session.lang)}"></label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="IN_WORK" name="filterState" value="IN_WORK" class="custom-control-input">
+                            <label class="custom-control-label" for="IN_WORK" th:text="${session.utils.translate('in_work', session.lang)}"></label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="CANCELED" name="filterState" value="CANCELED" class="custom-control-input">
+                            <label class="custom-control-label" for="CANCELED" th:text="${session.utils.translate('canceled', session.lang)}"></label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="COMPLETED" name="filterState" value="COMPLETED" class="custom-control-input">
+                            <label class="custom-control-label" for="COMPLETED" th:text="${session.utils.translate('completed', session.lang)}"></label>
+                        </div>
+                    </li>
+
+                    <p th:text="${session.utils.translate('master', session.lang)}+':'"></p>
+                    <input type="text" class="form-control" name="searchText" placeholder="Email" aria-label="Email" maxlength="20">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="${session.utils.translate('cancel', session.lang)}"></button>
+                    <button type="submit" class="btn btn-primary" th:text="${session.utils.translate('apply', session.lang)}"></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<ul class="nav justify-content-center">
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" th:text="${session.utils.translate('orders', session.lang)}"></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/manager/showUsers" th:text="${session.utils.translate('users', session.lang)}"></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/logout" th:text="${session.utils.translate('logout', session.lang)}"></a>
+    </li>
+</ul>
+
+
+<div class="row m-3">
+    <div class="container col-md-6">
+
+        <h2 class="text-center mb-3 mt-3" th:text="${session.utils.translate('orders_searching', session.lang)}"></h2>
+        <button type="button" class="btn btn-outline-secondary text-center mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal" th:text="${session.utils.translate('filter_options', session.lang)}"></button>
+
+
+
+
+        <div th:if="${orders}" th:each="order : ${orders}">
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${order.title}"></h5>
+                    <p class="card-text" th:text="${order.description}"></p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" th:if="${order.cost >= 0}" th:text="${session.utils.formatPrice(order.cost)+'$'}"></li>
+                    <li class="list-group-item" th:text="${order.creationTime.toString()}"></li>
+                    <li class="list-group-item" th:text="${session.utils.formatState(order.state, session.lang)}"></li>
+                    <li class="list-group-item" th:if="${order.master == null}" th:text="${session.utils.translate('master_not_specified', session.lang)}"></li>
+                </ul>
+                <div class="card-body">
+                    <a th:href="${'/manager/showOrderEdit?id='+order.id}" class="btn btn-primary" th:text="${session.utils.translate('edit', session.lang)}"></a>
+                </div>
+            </div>
+        </div>
+
+
+        <h3 th:if="${orders.isEmpty()}" class="text-center mb-3 mt-3" th:text="${session.utils.translate('no_orders', session.lang)}"></h3>
+
+        <div class="container text-center">
+            <div class="btn-group" role="group">
+                <a th:if = "${prev != null}" th:href="${'/manager/showOrders?page='+prev}" type="button" class="btn btn-primary">P</a>
+                <a th:if = "${next != null}" th:href="${'/manager/showOrders?page='+next}" type="button" class="btn btn-primary">N</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

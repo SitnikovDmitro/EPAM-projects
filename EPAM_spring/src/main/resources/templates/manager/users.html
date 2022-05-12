@@ -1,0 +1,65 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>Hello, world!</title>
+</head>
+<body>
+
+
+    <ul class="nav justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link" href="/manager/showOrders" th:text="${session.utils.translate('orders', session.lang)}"></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" th:text="${session.utils.translate('users', session.lang)}"></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/logout" th:text="${session.utils.translate('logout', session.lang)}"></a>
+        </li>
+    </ul>
+
+
+    <div class="row m-3">
+        <div class="container col-md-6">
+
+            <h2 class="text-center mb-3 mt-3" th:text="${session.utils.translate('user_selection', session.lang)}"></h2>
+
+            <form action="/manager/setUsersFilter" method="post">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Name or e-mail" aria-label="Name or email" aria-describedby="searchString" name="searchString" th:value="${session.searchString}" maxlength="20">
+                    <button class="btn btn-outline-secondary" type="submit" id="searchString" th:text="${session.utils.translate('search', session.lang)}"></button>
+                </div>
+            </form>
+
+
+
+
+            <div class="card mb-3" th:if="${users}" th:each="user : ${users}">
+                <div class="card-body">
+                    <h5 class="card-title mb-3" th:text="${user.firstname+' '+user.surname}"></h5>
+                    <p class="card-text" th:text="${user.phone}"></p>
+                    <p class="card-text" th:text="${user.email}"></p>
+                    <p class="card-text" th:text="${session.utils.formatPrice(user.balance)+'$'}"></p>
+
+                    <form th:action="${'/manager/changeUserBalance?email='+user.email}" method="post">
+                        <div class="input-group">
+                            <input type="number" min="0.00" max="10000.00" step="0.05" value="0.00" id="balance" name="balance" class="form-control" placeholder="Price" aria-describedby="apply" required>
+                            <button class="btn btn-outline-secondary" type="submit" id="apply" th:text="${session.utils.translate('apply', session.lang)}"></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+
+            <h3 class="text-center mb-3 mt-3" th:unless="${users}" th:text="${session.utils.translate('no_user', session.lang)}"></h3>
+
+
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>
